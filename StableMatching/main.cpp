@@ -1,0 +1,27 @@
+#include <iostream>
+#include "stableMatching.h"
+
+#define EXIT -1
+
+int main() {
+    using namespace std;
+
+    int amount = 0;
+
+    while (amount != EXIT) {
+        do {
+            cout << "\nEnter amount of pairs (type -1 to exit): ";
+            cin >> amount;
+        } while (amount < EXIT);
+
+        if (amount == EXIT) {
+            cout << "\n\nExiting..." << endl;
+        }
+
+        StableMatch matching = stableMatching(amount);
+
+        matching.Print();
+    }
+
+    return 0;
+}
