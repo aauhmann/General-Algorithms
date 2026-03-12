@@ -7,6 +7,7 @@ int main() {
     using namespace std;
 
     int amount = 0;
+    StableMatch match;
 
     while (amount != EXIT) {
         do {
@@ -15,12 +16,12 @@ int main() {
         } while (amount < EXIT);
 
         if (amount == EXIT) {
-            cout << "\n\nExiting..." << endl;
+            cout << "\nExiting..." << endl;
         }
-
-        StableMatch matching = stableMatching(amount);
-
-        matching.Print();
+        else {
+            match.GenerateMatch(amount);
+            match.Print();
+        }
     }
 
     return 0;

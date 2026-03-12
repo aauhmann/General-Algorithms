@@ -9,6 +9,19 @@ Person::Person(int id, int amount) : id(id), match(0) {
 
 int Person::GetId() { return id; }
 
+int Person::GetMatch() { return match; }
+
+void Person::SetMatch(int id) {
+    using namespace std;
+
+    if (id < 0 || id > preferences.size()) {
+        cout << "ID " << id << " is invalid" << endl;
+    }
+    else {
+        match = id;
+    }
+}
+
 std::vector<int> Person::GetPreferences() { return preferences; }
 
 void Person::GeneratePreferences(int amount) {
@@ -100,28 +113,40 @@ void Woman::Print() {
     }
 }
 
-StableMatch::StableMatch(std::vector<Man> male, std::vector<Woman> female, int amount) :
-    male(male),
-    female(female),
-    amount(amount) 
-{}
+StableMatch::StableMatch() : amount(0) {}
+
+StableMatch::StableMatch(int pairAmount) {
+    GenerateMatch(pairAmount);
+}
 
 void StableMatch::Print() {
-    // Prints both groups
+    using namespace std;
+
+    cout << "\n===== PRINTING STABLE MATCH (" << amount << " PAIRS) =====";
+
     for (int i = 0; i < amount; i++) {
         male[i].Print();
     }
+
+    cout << "\n----------------------" << endl;
     
     for (int i = 0; i < amount; i++) {
         female[i].Print();
     }
+
+    cout << "===== END PRINTING =====\n" << endl;
 }
 
-StableMatch stableMatching(int amount) {
+void StableMatch::GenerateMatch(int pairAmount) {
     using namespace std;
 
-    vector<Man> male;
-    vector<Woman> female;
+    if (pairAmount <= 0) {
+        cout << "\nPair amount must be a positive number" << endl;
+        return;
+    }
+
+    amount = pairAmount;
+
     vector<Man*> singleMen;
     vector<Man*> matchedMen;
 
@@ -152,15 +177,15 @@ StableMatch stableMatching(int amount) {
         }
 
         if (desired->Accept(proposer->GetId())) { // Case desired woman accepts proposal
-            int oldMatch = desired->match;
-            desired->match = proposer->GetId();
-            proposer->match = desired->GetId();
+            int oldMatch = desired->GetMatch();
+            desired->SetMatch(proposer->GetId());
+            proposer->SetMatch(desired->GetId());
             matchedMen.push_back(proposer);
 
             if (oldMatch != 0) { // Case she had already accepted another proposal
                 for (int j = 0; j < matchedMen.size(); j++) {
                     if (matchedMen[j]->GetId() == oldMatch) {
-                        matchedMen[j]->match = 0;
+                        matchedMen[j]->SetMatch(0);
                         singleMen.push_back(matchedMen[j]);
                         matchedMen.erase(matchedMen.begin() + j);
                         break;
@@ -173,6 +198,4 @@ StableMatch stableMatching(int amount) {
             singleMen.push_back(proposer); // Puts the man back in the singles list at the end of it
         }
     }
-
-    return (StableMatch){male, female, amount};
 }

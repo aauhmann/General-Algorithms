@@ -3,16 +3,19 @@
 
 class Person {
 public:
-    int match;
-
     Person(int id, int amount);
 
     int GetId();
+
+    int GetMatch();
+
+    void SetMatch(int id);
 
     std::vector<int> GetPreferences();
 
 protected:
     int id;
+    int match;
     std::vector<int> preferences;
 
     void GeneratePreferences(int amount);
@@ -20,8 +23,6 @@ protected:
 
 class Man : public Person {
 public:
-    std::vector<int> yetToPropose;
-
     Man(int id, int amount);
 
     // Proposes to a woman and removes her from the yetToPropose list
@@ -29,6 +30,9 @@ public:
 
     // Prints preferences and match (both by the ID's)
     void Print();
+
+private:
+    std::vector<int> yetToPropose;
 };
 
 class Woman : public Person {
@@ -44,15 +48,20 @@ public:
 
 struct StableMatch {
 public:
-    StableMatch(std::vector<Man> male, std::vector<Woman> female, int amount);
+    // Default constructor
+    StableMatch();
 
+    // Constructor with automatic stable match generation
+    StableMatch(int pairAmount);
+
+    // Prints both groups preferences and matches
     void Print();
+
+    // Generates a stable match based on random preferences of a given amount of pairs
+    void GenerateMatch(int pairAmount);
 
 private:
     std::vector<Man> male;
     std::vector<Woman> female;
     int amount;
 };
-
-// Generates a stable match based on random preferences of a given amount of pairs
-StableMatch stableMatching(int amount);
