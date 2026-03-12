@@ -25,7 +25,7 @@ class Man : public Person {
 public:
     Man(int id, int amount);
 
-    // Proposes to a woman and removes her from the yetToPropose list
+    // Proposes to a woman, removes her from the yetToPropose list and return her ID
     int Propose();
 
     // Prints preferences and match (both by the ID's)
@@ -64,4 +64,10 @@ private:
     std::vector<Man> male;
     std::vector<Woman> female;
     int amount;
+
+    // Clears the object
+    void Clear();
+
+    // Randomly generates both male and female vectors and then sets singleMen
+    void GenerateGroups(std::vector<Man*>& singleMen);
 };

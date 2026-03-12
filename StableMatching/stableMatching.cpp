@@ -145,21 +145,14 @@ void StableMatch::GenerateMatch(int pairAmount) {
         return;
     }
 
+    Clear();
+
     amount = pairAmount;
 
     vector<Man*> singleMen;
     vector<Man*> matchedMen;
 
-    // Creates two separate groups
-    for (int i = 0; i < amount; i++) {
-        male.push_back(Man(i + 1, amount));
-        female.push_back(Woman(i + 1, amount));
-    }
-
-    // Sets all men as single
-    for (int i = 0; i < amount; i++) {
-        singleMen.push_back(&male[i]);
-    }
+    GenerateGroups(singleMen);
 
     while (!singleMen.empty()) {
         Man* proposer = singleMen[0];
@@ -195,7 +188,29 @@ void StableMatch::GenerateMatch(int pairAmount) {
         }
 
         else { // Case desired woman refuses proposal
-            singleMen.push_back(proposer); // Puts the man back in the singles list at the end of it
+            singleMen.push_back(proposer); // Puts the man back in the singles list (at the end of it)
         }
+    }
+}
+
+void StableMatch::Clear() {
+    male.clear();
+    female.clear();
+    amount = 0;
+}
+
+void StableMatch::GenerateGroups(std::vector<Man*>& singleMen) {
+    // Creates two separate groups
+    for (int i = 0; i < amount; i++) {
+        male.push_back(Man(i + 1, amount));
+        female.push_back(Woman(i + 1, amount));
+    }
+
+    male.shrink_to_fit();
+    female.shrink_to_fit();
+
+    // Sets all men as single
+    for (int i = 0; i < amount; i++) {
+        singleMen.push_back(&male[i]);
     }
 }
