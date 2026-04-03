@@ -17,3 +17,42 @@ The input file contains N expressions (1 <= N <= 10000), each one with up to 100
 Output
 The output must be correct or incorrect for each test case according with above rules.*/
 
+#include <iostream>
+#include <vector>
+#include <string>
+#include <stack>
+
+bool sentenceJudger(std::string sentence);
+
+int main() {
+    using namespace std;
+
+    string currentSentence;
+
+
+    while(getline(cin, currentSentence)) {
+        cout << ((sentenceJudger(currentSentence)) ? ("correct\n") : ("incorrect\n"));
+    }
+}
+
+bool sentenceJudger(std::string sentence) {
+    using namespace std;
+
+    stack<char> parenthesis;
+
+    for (int i = 0; i < sentence.length() ; i++) {
+        if (sentence[i] == '(') {
+            parenthesis.push('(');
+        }
+        else if (sentence[i] == ')') {
+            if (parenthesis.empty()) {
+                return false;
+            }
+            else {
+                parenthesis.pop();
+            }
+        }
+    }
+
+    return parenthesis.empty();
+}
