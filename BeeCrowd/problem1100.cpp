@@ -94,19 +94,6 @@ public:
         return tile->getKnightEnabledTiles();
     }
 
-    std::vector<Tile*> getKnightEnabledTiles(std::pair<char, int> index) {
-        using namespace std;
-
-        vector<Tile*> knightEnabledTiles = tiles[index.second - 1][index.first - 'a'].getKnightEnabledTiles();
-
-        if (!knightEnabledTiles.empty()) 
-            return knightEnabledTiles;
-        else {
-            tiles[index.second - 1][index.first - 'a'].setKnightEnabledTiles(tiles, size);
-            return tiles[index.second - 1][index.first - 'a'].getKnightEnabledTiles();
-        }
-    }
-
     void resetTilesState() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++)
@@ -153,37 +140,31 @@ int bfs(Chessboard& board, std::pair<char, int> currentTileIndex, std::pair<char
         return 0;
     }
 
-    int moves = 0, leftOnLayer;
+    int currentLayer;
     bool targetFound = false;
     Tile* targetTile = board.getTilePtr(targetTileIndex);
     Tile* currentTile = board.getTilePtr(currentTileIndex);
-    queue<Tile*> toVisit;
+    queue<pair<Tile*, int>> toVisit;
 
-    toVisit.push(currentTile);
-    leftOnLayer = toVisit.size();
+    toVisit.push(pair(currentTile, 0));
     currentTile->switchState();
 
     while (!targetFound) {
-        if (leftOnLayer == 0) {
-            moves++;
-            leftOnLayer = toVisit.size();
-        }
-
-        currentTile = toVisit.front();
+        currentTile = toVisit.front().first;
+        currentLayer = toVisit.front().second;
         toVisit.pop();
-        leftOnLayer--;
 
         for (Tile* tile : board.getKnightEnabledTiles(currentTile)) {
             if (tile == targetTile) {
                 targetFound = true;
-                moves++;
+                currentLayer++;
             }
             else if (!tile->wasVisited()) {
                 tile->switchState();
-                toVisit.push(tile);
+                toVisit.push(pair(tile, currentLayer + 1));
             }
         }
     }
 
-    return moves;
+    return currentLayer;
 }
