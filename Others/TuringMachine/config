@@ -1,0 +1,12 @@
+# config
+tapes: 2
+bidirectional: true
+blank_symbol: _
+initial_state: q0
+accept_state: qA
+reject_state: qR
+
+[transitions]
+# state  read(t1,t2)  ->  next  write(t1,t2)  move(t1,t2)
+q0  1 _  ->  q0  1 1  R R
+q0  _ _  ->  qA  _ _  S S
