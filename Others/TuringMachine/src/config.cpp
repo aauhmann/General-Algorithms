@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
-#include <string>
 
 using namespace std;
 
@@ -11,7 +10,7 @@ void Config::print() {
     cout << "\n========== TURING MACHINE ==========" << endl;
     cout << "Tapes: " << tapes << endl;
     cout << "Bidirectional: " << (bidirectional ? "Yes" : "No") << endl;
-    cout << "Blank symbol: " << blank << endl;
+    cout << "Blank symbol: " << blankSymbol << endl;
     cout << "Initial state: " << initialState << endl;
     cout << "Accept state: " << acceptState << endl;
     cout << "Reject state: " << rejectState << endl;
@@ -34,9 +33,21 @@ Config Config::load(const string& path) {
         line = trim(line);
         if (line.empty() || line[0] == '#') continue;
 
+        // Everything after [transitions] is the transition table
+        if (line == "[transitions]") {
+            try {
+                config.transitions = Transitions::load(file, config.tapes);
+            }
+            catch (const exception& e) {
+                cerr << "Error (transitions): " << e.what() << endl;
+                exit(1);
+            }
+            break;
+        }
+
         size_t pos = line.find(':');
         if (pos == string::npos) {
-            cerr << "Warning (line " << lineNumber << "): missing '='" << endl;
+            cerr << "Warning (line " << lineNumber << "): missing ':'" << endl;
             continue;
         }
 
@@ -46,7 +57,8 @@ Config Config::load(const string& path) {
         if (key == "tapes") {
             try {
                 config.tapes = stoi(value);
-            } catch (const exception&) {
+            }
+            catch (const exception&) {
                 cerr << "Error (line " << lineNumber << "): tapes must be a number" << endl;
                 exit(1);
             }
@@ -55,7 +67,7 @@ Config Config::load(const string& path) {
             config.bidirectional = (value == "true");
         } 
         else if (key == "blank_symbol") {
-            config.blank = value.empty() ? '_' : value[0];
+            config.blankSymbol = value.empty() ? '_' : value[0];
         } 
         else if (key == "initial_state") {
             config.initialState = value;

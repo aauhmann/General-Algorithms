@@ -6,23 +6,11 @@
 
 using namespace std;
 
-static Move charToMove(char c) {
-    switch (c) {
-        case 'L': return Move::Left;
-        case 'R': return Move::Right;
-        case 'S': return Move::Stay;
-        default: throw runtime_error(string("invalid move '") + c + "' (use L, R or S)");
-    }
-}
+static Move charToMove(char c);
+static char moveToChar(Move m);
 
-static char moveToChar(Move m) {
-    switch (m) {
-        case Move::Left:  return 'L';
-        case Move::Right: return 'R';
-        case Move::Stay:  return 'S';
-    }
-    return '?';
-}
+TransitionKey::TransitionKey() {}
+TransitionKey::TransitionKey(std::string state, std::vector<char> read) : currentState(state), read(read) {}
 
 Transitions Transitions::load(istream& input, int tapes) {
     Transitions transitions;
@@ -37,7 +25,6 @@ Transitions Transitions::load(istream& input, int tapes) {
         TransitionAction action;
         string arrow;
 
-        // state  read...  ->  next  write...  move...
         iss >> key.currentState;
 
         key.read.resize(tapes);
@@ -81,4 +68,22 @@ void Transitions::print() {
         for (Move m : action.moves) cout << ' ' << moveToChar(m);
         cout << endl;
     }
+}
+
+static Move charToMove(char c) {
+    switch (c) {
+        case 'L': return Move::Left;
+        case 'R': return Move::Right;
+        case 'S': return Move::Stay;
+        default: throw runtime_error(string("invalid move '") + c + "' (use L, R or S)");
+    }
+}
+
+static char moveToChar(Move m) {
+    switch (m) {
+        case Move::Left:  return 'L';
+        case Move::Right: return 'R';
+        case Move::Stay:  return 'S';
+    }
+    return '?';
 }

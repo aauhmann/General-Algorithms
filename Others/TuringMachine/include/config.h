@@ -6,7 +6,7 @@
 struct Config {
     int tapes = 1;
     bool bidirectional = false;
-    char blank = '_';
+    char blankSymbol = '_';
     std::string initialState = "q0";
     std::string acceptState = "qA";
     std::string rejectState = "qR";

@@ -12,6 +12,9 @@ struct TransitionKey {
     std::string currentState;
     std::vector<char> read;
 
+    TransitionKey();
+    TransitionKey(std::string state, std::vector<char> read);
+
     bool operator<(const TransitionKey& other) const {
         return std::tie(currentState, read) < std::tie(other.currentState, other.read);
     }
