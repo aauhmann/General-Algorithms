@@ -1,0 +1,38 @@
+# config
+# Palindrome checker over {0, 1} using 2 bidirectional tapes.
+#
+# Phase 1 (q0): copy the input to tape 2 while moving tape 2's head to the LEFT,
+#               so the copy is written reversed into the negative positions.
+# Phase 2 (q1): rewind tape 1 to the start of the input (tape 2 stays still,
+#               already pointing at the first symbol of the reversed copy).
+# Phase 3 (q2): walk both heads to the right comparing input vs. reversed input.
+tapes: 2
+bidirectional: true
+blank_symbol: _
+initial_state: q0
+accept_state: qA
+reject_state: qR
+
+[transitions]
+# current_state  read(t1,t2)  ->  next_state  write(t1,t2)  move(t1,t2)
+
+# Phase 1: copy reversed (tape 2 grows to the left)
+q0  0 _  ->  q0  0 0  R L
+q0  1 _  ->  q0  1 1  R L
+q0  _ _  ->  q1  _ _  L R
+
+# Phase 2: rewind tape 1
+q1  0 0  ->  q1  0 0  L S
+q1  0 1  ->  q1  0 1  L S
+q1  1 0  ->  q1  1 0  L S
+q1  1 1  ->  q1  1 1  L S
+q1  _ 0  ->  q2  _ 0  R S
+q1  _ 1  ->  q2  _ 1  R S
+q1  _ _  ->  q2  _ _  R S
+
+# Phase 3: compare
+q2  0 0  ->  q2  0 0  R R
+q2  1 1  ->  q2  1 1  R R
+q2  0 1  ->  qR  0 1  S S
+q2  1 0  ->  qR  1 0  S S
+q2  _ _  ->  qA  _ _  S S
