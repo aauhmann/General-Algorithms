@@ -11,7 +11,7 @@ class TuringMachine {
     Config config;
     std::vector<std::deque<char>> tapes;
 
-    void printStep(int step, const std::vector<int>& head);
+    void printStep(int step, const TransitionKey& key, const std::vector<int>& head, int tapeStart);
     bool checkState(const std::string& state, const std::string& input);
 
 public:

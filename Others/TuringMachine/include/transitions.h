@@ -5,6 +5,7 @@
 #include <map>
 #include <tuple>
 #include <istream>
+#include <optional>
 
 enum class Move {Left, Right, Stay};
 
@@ -26,9 +27,13 @@ struct TransitionAction {
     std::vector<Move> moves;
 };
 
-struct Transitions {
+class Transitions {
     std::map<TransitionKey, TransitionAction> table;
 
-    void print();
+public:
     static Transitions load(std::istream& input, int tapes);
+    std::optional<TransitionAction> find(const TransitionKey& key) const;
+    void print() const;
+    void print(const TransitionKey& key) const;
+    bool empty() const;
 };

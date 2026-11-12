@@ -8,6 +8,7 @@ using namespace std;
 
 static Move charToMove(char c);
 static char moveToChar(Move m);
+static void condPrint(char c, bool& cond);
 
 TransitionKey::TransitionKey() {}
 TransitionKey::TransitionKey(std::string state, std::vector<char> read) : currentState(state), read(read) {}
@@ -55,19 +56,56 @@ Transitions Transitions::load(istream& input, int tapes) {
     return transitions;
 }
 
-void Transitions::print() {
+optional<TransitionAction> Transitions::find(const TransitionKey& key) const {
+    auto iterator = table.find(key);
+    if (iterator == table.end()) {
+        return nullopt;
+    }
+    return iterator->second;
+}
+
+void Transitions::print() const {
     cout << "Transitions (" << table.size() << "):" << endl;
 
     for (const auto& [key, action] : table) {
-        cout << "  " << key.currentState;
-        for (char c : key.read) cout << ' ' << c;
-
-        cout << "  ->  " << action.nextState;
-        for (char c : action.write) cout << ' ' << c;
-        cout << ' ';
-        for (Move m : action.moves) cout << ' ' << moveToChar(m);
-        cout << endl;
+        cout << "   ";
+        print(key);
     }
+}
+
+void Transitions::print(const TransitionKey& key) const {
+    auto result = find(key);
+    if (!result) {
+        cout << "There's no match for this key";
+    }
+    const TransitionAction& action = *result;
+
+    cout << "{ " << key.currentState << " (";
+
+    bool spacePrint = false;
+    for (char c : key.read) {
+        condPrint(c, spacePrint);
+    }
+
+    cout << ")  ->  " << action.nextState << " (";
+
+    spacePrint = false;
+    for (char c : action.write) {
+        condPrint(c, spacePrint);
+    }
+
+    cout << ") (";
+
+    spacePrint = false;
+    for (Move m : action.moves) {
+        condPrint(moveToChar(m), spacePrint);
+    }
+    
+    cout << ") }" << endl;
+}
+
+bool Transitions::empty() const {
+    return table.empty();
 }
 
 static Move charToMove(char c) {
@@ -86,4 +124,14 @@ static char moveToChar(Move m) {
         case Move::Stay:  return 'S';
     }
     return '?';
+}
+
+static void condPrint(char c, bool& cond) {
+    if (cond) {
+        cout << ',' << c;
+    }
+    else {
+        cond = true;
+        cout << c;
+    }
 }

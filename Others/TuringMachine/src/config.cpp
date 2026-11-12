@@ -15,6 +15,7 @@ void Config::print() {
     cout << "Accept state: " << acceptState << endl;
     cout << "Reject state: " << rejectState << endl;
     transitions.print();
+    cout << "============= CONFIG END =============" << endl;
 }
 
 Config Config::load(const string& path) {

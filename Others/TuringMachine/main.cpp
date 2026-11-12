@@ -15,27 +15,33 @@ int main() {
 
     int menu;
     do {
-        cout << "\n--- MENU ---" << endl;
+        cout << "\n===== MENU =====" << endl;
         cout << "1. PRINT CONFIG" << endl;
         cout << "2. RUN" << endl;
         cout << "3. EXIT" << endl;
 
+        cout << "Option: ";
         cin >> menu;
+        while (getchar() != '\n');
+        cout << "================" << endl;
 
         switch (menu) {
-            case 1: tm.printConfig(); break;
+            case 1:
+                tm.printConfig();
+                cout << endl;
+                break;
             case 2: {
                 string input;
-                cout << "Insert input: ";
+                cout << "\nInput to run: ";
                 getline(cin, input);
                 tm.run(input);
-                break;
-            }
+                cout << endl;
+                break;}
             case 3: break;
         }
     } while (menu != EXIT);
 
-    cout << "\nTuring Machine Simulator ending..." << endl;
+    cout << "\nTuring Machine Simulator ending...\n" << endl;
 
     return 0;
 }
